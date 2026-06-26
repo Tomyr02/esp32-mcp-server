@@ -4,7 +4,10 @@ from fastmcp import FastMCP
 FIREBASE_URL = "https://esp32aws-903f7-default-rtdb.firebaseio.com"
 FIREBASE_SECRET = "tu-firebase-secret"
 
-mcp = FastMCP("ESP32 Sensor Server")
+mcp = FastMCP(
+    "ESP32 Sensor Server",
+    auth=None
+)
 
 @mcp.tool()
 async def get_latest_reading() -> dict:
