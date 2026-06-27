@@ -1,0 +1,67 @@
+📡 ESP32 IoT Project — Acceso
+
+🔗 MCP Server (FastMCP Horizon):
+https://esp32-sensor-server.fastmcp.app/mcp
+
+📁 Código fuente:
+https://github.com/Tomyr02/esp32-mcp-server
+
+🔥 Firebase Realtime Database:
+https://esp32aws-903f7-default-rtdb.firebaseio.com/sensores.json
+
+🛠️ Para conectar en VS Code con Copilot:
+1. Crear cuenta en horizon.prefect.io
+2. Generar API Key en Settings → API Keys  
+3. Agregar en settings.json de VS Code:
+{
+  "mcp": {
+    "servers": {
+      "esp32-sensor": {
+        "type": "sse",
+        "url": "https://esp32-sensor-server.fastmcp.app/mcp",
+        "headers": {
+          "Authorization": "Bearer <su-api-key>"
+        }
+      }
+    }
+  }
+}
+
+Claude Desktop
+Abrir el archivo:
+
+C:\Users[tu-usuario]\AppData\Roaming\Claude\claude_desktop_config.json
+Pegar este contenido:
+{
+  "mcpServers": {
+    "esp32-sensor": {
+      "type": "sse",
+      "url": "https://darkening-attribute-dynasty.ngrok-free.dev/sse"
+    }
+  }
+}
+
+GitHub Copilot en VS Code
+Abrir VS Code → Ctrl+Shift+P → Open User Settings (JSON)
+Agregar dentro del JSON:
+"mcp": {
+  "servers": {
+    "esp32-sensor": {
+      "type": "sse",
+      "url": "https://darkening-attribute-dynasty.ngrok-free.dev/sse"
+    }
+  }
+}
+
+Cursor AI
+Abrir o crear el archivo:
+
+C:\Users[tu-usuario].cursor\mcp.json
+Pegar:
+{
+  "mcpServers": {
+    "esp32-sensor": {
+      "url": "https://darkening-attribute-dynasty.ngrok-free.dev/sse"
+    }
+  }
+}
