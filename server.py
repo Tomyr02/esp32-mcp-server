@@ -6,7 +6,7 @@ FIREBASE_SECRET = "tu-firebase-secret"
 
 mcp = FastMCP(
     "ESP32 Sensor Server",
-    auth=None
+    auth=None  # Sin autenticación
 )
 
 @mcp.tool()
@@ -14,15 +14,35 @@ async def get_latest_reading() -> dict:
     """Obtiene la última lectura del sensor ESP32 (temperatura y presión)"""
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{FIREBASE_URL}/sensores.json?auth={FIREBASE_SECRET}&orderBy=\"timestamp\"&limitToLast=1"
+            f"{FIREBASE_URL}/sensores.json?auth={FIREBASE_SECRET}"
         )
         data = response.json()
         if data and isinstance(data, dict):
-            # Filtrar registros válidos
-            for key, value in data.items():
-                if isinstance(value, dict) and value.get('temperatura', 0) != 0:
-                    return value
-        return {"error": "No valid data found"}
+            readings = [v for v in data.values() 
+                       if isinstance(v, dict) and v.get('temperatura', 0) != 0]
+            if readings:
+                latest = max(readings, key=lambda x: x.get('timestamp', 0))
+                return latest
+        return {"error": "No data found"}
+
+@mcp.tool()
+async def get_latest_temp_pressure() -> dict:
+    """Obtiene la última temperatura y presión del sensor ESP32"""
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{FIREBASE_URL}/sensores.json?auth={FIREBASE_SECRET}"
+        )
+        data = response.json()
+        if not data:
+            return {"error": "No data found"}
+
+        last_key = list(data.keys())[-1]
+        last = data[last_key]
+        return {
+            "timestamp": last_key,
+            "temperatura": last.get("temperatura"),
+            "presion": last.get("presion"),
+        }
 
 @mcp.tool()
 async def get_all_readings() -> dict:
