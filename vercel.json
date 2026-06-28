@@ -1,0 +1,10 @@
+{
+  "builds": [
+    { "src": "api/*.py", "use": "@vercel/python" },
+    { "src": "public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "api/mcp.py" },
+    { "src": "/(.*)", "dest": "public/$1" }
+  ]
+}

@@ -17,10 +17,32 @@ async def get_latest_reading() -> dict:
             f"{FIREBASE_URL}/sensores.json?auth={FIREBASE_SECRET}"
         )
         data = response.json()
-        if data:
-            last_key = list(data.keys())[-1]
-            return data[last_key]
+        if data and isinstance(data, dict):
+            readings = [v for v in data.values() 
+                       if isinstance(v, dict) and v.get('temperatura', 0) != 0]
+            if readings:
+                latest = max(readings, key=lambda x: x.get('timestamp', 0))
+                return latest
         return {"error": "No data found"}
+
+@mcp.tool()
+async def get_latest_temp_pressure() -> dict:
+    """Obtiene la última temperatura y presión del sensor ESP32"""
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{FIREBASE_URL}/sensores.json?auth={FIREBASE_SECRET}"
+        )
+        data = response.json()
+        if not data:
+            return {"error": "No data found"}
+
+        last_key = list(data.keys())[-1]
+        last = data[last_key]
+        return {
+            "timestamp": last_key,
+            "temperatura": last.get("temperatura"),
+            "presion": last.get("presion"),
+        }
 
 @mcp.tool()
 async def get_all_readings() -> dict:
